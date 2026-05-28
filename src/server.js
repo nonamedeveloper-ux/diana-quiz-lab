@@ -19,11 +19,15 @@ app.set('trust proxy', 1);
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
 });
 
-// Production: check persistent disk is mounted
+// Production: ensure DATABASE_URL points to a writable location
 if (process.env.NODE_ENV === 'production') {
   const dataDir = '/var/data';
-  if (!fs.existsSync(dataDir)) {
-    console.warn('⚠️  /var/data not found — using local fallback. Add a Disk in Render dashboard!');
+  if (fs.existsSync(dataDir)) {
+    process.env.DATABASE_URL = 'file:/var/data/prod.db';
+    console.log('✅  Persistent disk found — using /var/data/prod.db');
+  } else {
+    console.warn('⚠️  /var/data not mounted — falling back to local DB (data resets on redeploy!)');
+    process.env.DATABASE_URL = `file:${path.join(__dirname, '..', 'prisma', 'prod.db')}`;
   }
 }
 
