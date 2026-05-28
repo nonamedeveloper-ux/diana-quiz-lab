@@ -1,0 +1,113 @@
+<%- include('../partials/header') %>
+
+<!-- Stat cards -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center gap-4">
+    <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
+      <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+    </div>
+    <div>
+      <p class="text-2xl font-bold text-gray-800"><%= totalQuestions.toLocaleString() %></p>
+      <p class="text-sm text-gray-500">Jami savollar</p>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center gap-4">
+    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+      <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+      </svg>
+    </div>
+    <div>
+      <p class="text-2xl font-bold text-gray-800"><%= totalSubjects %></p>
+      <p class="text-sm text-gray-500">Fanlar</p>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center gap-4">
+    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+      <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+      </svg>
+    </div>
+    <div>
+      <p class="text-2xl font-bold text-gray-800"><%= totalTests %></p>
+      <p class="text-sm text-gray-500">Yaratilgan testlar</p>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+  <!-- Subject stats -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h2 class="text-base font-semibold text-gray-800 mb-4">Fanlar bo'yicha savollar</h2>
+    <% if (subjectStats.length === 0) { %>
+      <p class="text-gray-400 text-sm">Hali fan qo'shilmagan.</p>
+    <% } else { %>
+      <div class="space-y-3">
+        <% for (const s of subjectStats) { %>
+          <% const pct = totalQuestions > 0 ? Math.round(s._count.questions / totalQuestions * 100) : 0 %>
+          <div>
+            <div class="flex justify-between text-sm mb-1">
+              <span class="font-medium text-gray-700"><%= s.name %></span>
+              <span class="text-gray-500"><%= s._count.questions %> ta savol</span>
+            </div>
+            <div class="w-full bg-gray-100 rounded-full h-2">
+              <div class="bg-indigo-500 h-2 rounded-full transition-all" style="width: <%= pct %>%"></div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Recent tests -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-base font-semibold text-gray-800">So'nggi testlar</h2>
+      <a href="/generator/history" class="text-sm text-indigo-600 hover:underline">Barchasi</a>
+    </div>
+    <% if (recentTests.length === 0) { %>
+      <p class="text-gray-400 text-sm">Hali test yaratilmagan.</p>
+    <% } else { %>
+      <div class="space-y-3">
+        <% for (const t of recentTests) { %>
+          <div class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+            <div>
+              <p class="text-sm font-medium text-gray-800"><%= t.title %></p>
+              <p class="text-xs text-gray-400">
+                <%= t.subject.name %> &middot; <%= t.totalVariants %> variant &middot; <%= t.questionsPerVariant %> savol
+              </p>
+            </div>
+            <a href="/generator/<%= t.id %>" class="text-xs text-indigo-600 hover:underline flex-shrink-0 ml-2">Ko'rish</a>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+
+</div>
+
+<!-- Quick actions -->
+<div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+  <a href="/questions" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl p-4 flex items-center gap-3 transition-colors">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+    <span class="font-medium text-sm">Savol qo'shish</span>
+  </a>
+  <a href="/questions/import" class="bg-green-600 hover:bg-green-700 text-white rounded-xl p-4 flex items-center gap-3 transition-colors">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/></svg>
+    <span class="font-medium text-sm">Excel import</span>
+  </a>
+  <a href="/generator" class="bg-purple-600 hover:bg-purple-700 text-white rounded-xl p-4 flex items-center gap-3 transition-colors">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    <span class="font-medium text-sm">Test yaratish</span>
+  </a>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="uz" class="h-full">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Foydalanuvchi Qo'llanmasi — Test Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .prose h2 { font-size: 1.4rem; font-weight: 700; color: #1e1b4b; margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e0e7ff; }
+    .prose h3 { font-size: 1.1rem; font-weight: 600; color: #3730a3; margin-top: 1.8rem; margin-bottom: 0.6rem; }
+    .prose h4 { font-size: 0.95rem; font-weight: 600; color: #4f46e5; margin-top: 1.2rem; margin-bottom: 0.4rem; }
+    .prose p  { color: #374151; line-height: 1.8; margin-bottom: 0.75rem; font-size: 0.925rem; }
+    .prose ul { color: #374151; padding-left: 1.4rem; margin-bottom: 0.75rem; }
+    .prose ul li { margin-bottom: 0.35rem; font-size: 0.925rem; line-height: 1.7; list-style-type: disc; }
+    .prose ol li { margin-bottom: 0.35rem; font-size: 0.925rem; line-height: 1.7; }
+    .prose ol { color: #374151; padding-left: 1.4rem; margin-bottom: 0.75rem; }
+    .prose code { background: #eef2ff; color: #4338ca; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.82rem; font-family: monospace; }
+    .prose table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.875rem; }
+    .prose table th { background: #eef2ff; color: #3730a3; font-weight: 600; padding: 0.6rem 1rem; text-align: left; border: 1px solid #c7d2fe; }
+    .prose table td { padding: 0.55rem 1rem; border: 1px solid #e5e7eb; color: #374151; }
+    .prose table tr:nth-child(even) td { background: #f9fafb; }
+    .step { counter-increment: step-counter; }
+    .step::before { content: counter(step-counter); display: inline-flex; align-items: center; justify-content: center; width: 1.6rem; height: 1.6rem; background: #4f46e5; color: white; border-radius: 50%; font-size: 0.75rem; font-weight: 700; margin-right: 0.6rem; flex-shrink: 0; }
+    ol.steps { counter-reset: step-counter; list-style: none; padding-left: 0; }
+    ol.steps li { display: flex; align-items: flex-start; margin-bottom: 0.6rem; }
+    .tip { background: #ecfdf5; border-left: 4px solid #10b981; padding: 0.9rem 1.2rem; border-radius: 0 8px 8px 0; margin: 1rem 0; }
+    .warn { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.9rem 1.2rem; border-radius: 0 8px 8px 0; margin: 1rem 0; }
+    .info { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 0.9rem 1.2rem; border-radius: 0 8px 8px 0; margin: 1rem 0; }
+    .screen { background: #1e1b4b; color: #a5b4fc; padding: 0.9rem 1.2rem; border-radius: 8px; font-family: monospace; font-size: 0.82rem; margin: 0.75rem 0; white-space: pre; }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white; }
+      .shadow-sm { box-shadow: none; }
+      aside { display: none !important; }
+      main { padding: 0 !important; }
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+<!-- TOP BAR -->
+<div class="no-print bg-indigo-900 text-white px-6 py-3 flex items-center justify-between sticky top-0 z-50 shadow-lg">
+  <div class="flex items-center gap-3">
+    <a href="/dashboard" class="text-indigo-300 hover:text-white text-sm flex items-center gap-1.5">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+      Orqaga
+    </a>
+    <span class="text-indigo-600">|</span>
+    <span class="font-semibold">Foydalanuvchi Qo'llanmasi</span>
+  </div>
+  <button onclick="window.print()" class="flex items-center gap-2 bg-indigo-700 hover:bg-indigo-600 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+    Chop etish / PDF
+  </button>
+</div>
+
+<div class="max-w-5xl mx-auto px-4 py-10 flex gap-8">
+
+  <!-- SIDEBAR NAV -->
+  <nav class="no-print w-56 flex-shrink-0 hidden lg:block">
+    <div class="sticky top-20 bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+      <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Mundarija</p>
+      <ul class="space-y-1 text-sm">
+        <li><a href="#intro"       class="block px-2 py-1.5 rounded hover:bg-indigo-50 hover:text-indigo-700 text-gray-600 transition-colors">1. Kirish</a></li>
+        <li><a href="#login"       class="block px-2 py-1.5 rounded hover:bg-indigo-50 hover:text-indigo-700 text-gray-600 transition-colors">2. Tizimga kirish</a></li>
+        <li><a href="#dashboard"   class="block px-2 py-1.5 rounded hover:bg-indigo-50 hover:text-indigo-700 text-gray-600 transition-colors">3. Dashboard</a></li>
+        <li><a href="#subjects"    class="block px-2 py-1.5 rounded hover:bg-indigo-50 hover:text-indigo-700 text-gray-600 transition-colors">4. Fanlar</a></li>
+        <li><a href="#questions"   class="block px-2 py-1.5 rounded hover:bg-indigo-50 hover:text-indigo-700 text-gray-600 transition-colors">5. Savollar</a></li>
+        <li><a href="#import"      class="block px-2 py-1.5 rounded hover:bg-indigo-50 hover:text-indigo-700 text-gray-600 transition-colors">6. Excel import</a></li>
+        <li><a href="#generator"   class="block px-2 py-1.5 rounded hover:bg-indigo-50 hover:text-indigo-700 text-gray-600 transition-colors">7. Test yaratish</a></li>
+        <li><a href="#download"    class="block px-2 py-1.5 rounded hover:bg-indigo-50 hover:text-indigo-700 text-gray-600 transition-colors">8. Yuklab olish</a></li>
+        <li><a href="#history"     class="block px-2 py-1.5 rounded hover:bg-indigo-50 hover:text-indigo-700 text-gray-600 transition-colors">9. Test tarixi</a></li>
+        <li><a href="#algorithm"   class="block px-2 py-1.5 rounded hover:bg-indigo-50 hover:text-indigo-700 text-gray-600 transition-colors">10. Algoritm</a></li>
+        <li><a href="#excel-format" class="block px-2 py-1.5 rounded hover:bg-indigo-50 hover:text-indigo-700 text-gray-600 transition-colors">11. Excel format</a></li>
+        <li><a href="#faq"         class="block px-2 py-1.5 rounded hover:bg-indigo-50 hover:text-indigo-700 text-gray-600 transition-colors">12. Ko'p so'raladigan</a></li>
+        <li><a href="#tips"        class="block px-2 py-1.5 rounded hover:bg-indigo-50 hover:text-indigo-700 text-gray-600 transition-colors">13. Maslahatlar</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="flex-1 min-w-0">
+
+    <!-- COVER -->
+    <div class="bg-gradient-to-br from-indigo-700 to-purple-700 rounded-2xl p-8 text-white mb-8 shadow-lg">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-indigo-200 text-xs uppercase tracking-widest font-semibold">Rasmiy hujjat</p>
+          <h1 class="text-2xl font-bold">Foydalanuvchi Qo'llanmasi</h1>
+        </div>
+      </div>
+      <p class="text-indigo-100 text-sm leading-relaxed mb-5">
+        Ushbu qo'llanma <strong>Random Test Generator</strong> tizimidan to'liq foydalanish bo'yicha
+        barcha zaruriy ma'lumotlarni o'z ichiga oladi. Maktab va o'quv markazlar uchun mo'ljallangan
+        bu tizim yordamida test variantlarini tez va professional tarzda yaratish mumkin.
+      </p>
+      <div class="grid grid-cols-3 gap-4 pt-4 border-t border-white/20 text-center text-sm">
+        <div><p class="text-2xl font-bold">13</p><p class="text-indigo-200 text-xs">bo'lim</p></div>
+        <div><p class="text-2xl font-bold">3</p><p class="text-indigo-200 text-xs">yuklab olish formati</p></div>
+        <div><p class="text-2xl font-bold">∞</p><p class="text-indigo-200 text-xs">variant yaratish</p></div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 prose">
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <h2 id="intro">1. Tizim haqida umumiy ma'lumot</h2>
+
+      <p>
+        <strong>Random Test Generator</strong> — maktab va o'quv markazlar uchun ishlab chiqilgan
+        web ilova bo'lib, u orqali:
+      </p>
+      <ul>
+        <li>Savollar bazasini yaratish va boshqarish mumkin</li>
+        <li>Bir nechta fanning savollarini alohida saqlash mumkin</li>
+        <li>Excel fayl orqali minglab savolni bir vaqtda yuklash mumkin</li>
+        <li>Har bir o'quvchi uchun <strong>boshqacha variant</strong> avtomatik yaratiladi</li>
+        <li>Javob variantlari (A, B, C, D) <strong>random tartibda</strong> aralashtiriladi</li>
+        <li>Natijani <strong>Word</strong> yoki <strong>Excel</strong> formatda yuklab olish mumkin</li>
+        <li>Javoblar kaliti avtomatik hisoblab, alohida faylda chiqariladi</li>
+      </ul>
+
+      <div class="info">
+        <p class="font-semibold text-blue-800 m-0">Tizim qanday ishlaydi?</p>
+        <p class="text-blue-700 m-0 mt-1">
+          Admin savollarni bazaga kiritadi → Test yaratish sahifasida fan, variant soni va savol sonini
+          tanlaydi → Tizim har bir variant uchun tasodifiy savollar tanlab, javoblarni aralashtiradi →
+          Word/Excel fayllar yuklab olinadi → Fayllar chop etiladi va o'quvchilarga tarqatiladi.
+        </p>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <h2 id="login">2. Tizimga kirish (Login)</h2>
+
+      <h3>2.1 Brauzerda ochish</h3>
+      <p>Brauzerda quyidagi manzilni oching:</p>
+      <div class="screen">http://localhost:3000</div>
+      <p>Sahifa avtomatik ravishda kirish sahifasiga yo'naltiradi.</p>
+
+      <h3>2.2 Login ma'lumotlari</h3>
+      <table>
+        <thead><tr><th>Maydon</th><th>Qiymat</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Login (username)</strong></td><td><code>admin</code></td></tr>
+          <tr><td><strong>Parol (password)</strong></td><td><code>Admin123!</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="warn">
+        <p class="font-semibold text-amber-800 m-0">Muhim!</p>
+        <p class="text-amber-700 m-0 mt-1">
+          Tizimni ishga tushirishdan oldin <code>.env</code> faylda
+          <code>ADMIN_USERNAME</code> va <code>ADMIN_PASSWORD</code> ni o'zgartiring.
+          Standart parolni ishlatish xavfsiz emas!
+        </p>
+      </div>
+
+      <h3>2.3 Tizimdan chiqish</h3>
+      <p>
+        Sahifaning yuqori o'ng burchagida admin nomi yonidagi
+        <strong>"Chiqish"</strong> tugmasini bosing. Session avtomatik o'chiriladi.
+      </p>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <h2 id="dashboard">3. Dashboard (Bosh sahifa)</h2>
+
+      <p>Tizimga kirganingizdan so'ng <strong>Dashboard</strong> sahifasi ochiladi. Bu sahifada:</p>
+
+      <h3>3.1 Statistika kartochkalar</h3>
+      <table>
+        <thead><tr><th>Karta</th><th>Nimani ko'rsatadi</th></tr></thead>
+        <tbody>
+          <tr><td>Jami savollar</td><td>Bazadagi barcha savollar soni</td></tr>
+          <tr><td>Fanlar</td><td>Yaratilgan fanlar soni</td></tr>
+          <tr><td>Yaratilgan testlar</td><td>Shu paytgacha generatsiya qilingan testlar</td></tr>
+        </tbody>
+      </table>
+
+      <h3>3.2 Fanlar bo'yicha jadval</h3>
+      <p>
+        Har bir fan uchun progress bar ko'rsatiladi. Bu orqali qaysi fanda ko'p, qaysi fanda
+        kam savol borligini tezda bilib olish mumkin.
+      </p>
+
+      <h3>3.3 So'nggi testlar</h3>
+      <p>
+        Oxirgi 5 ta yaratilgan test ro'yxati ko'rsatiladi. "Ko'rish" havolasi orqali
+        testning natija sahifasiga o'tish mumkin.
+      </p>
+
+      <h3>3.4 Tezkor harakatlar</h3>
+      <p>Pastki qismda uchta tugma mavjud:</p>
+      <ul>
+        <li><strong>Savol qo'shish</strong> — savollar sahifasiga o'tadi</li>
+        <li><strong>Excel import</strong> — import sahifasiga o'tadi</li>
+        <li><strong>Test yaratish</strong> — generator sahifasiga o'tadi</li>
+      </ul>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <h2 id="subjects">4. Fanlar boshqaruvi</h2>
+
+      <p>
+        Chap menuda <strong>"Fanlar"</strong> bo'limini tanlang.
+        Bu sahifada mavjud fanlar jadvali ko'rsatiladi.
+      </p>
+
+      <h3>4.1 Yangi fan qo'shish</h3>
+      <ol class="steps">
+        <li class="step"><span>Yuqori o'ng burchakdagi <strong>"Fan qo'shish"</strong> (ko'k) tugmani bosing.</span></li>
+        <li class="step"><span>Ochiladigan modal oynada <strong>Fan nomi</strong>ni kiriting (majburiy).</span></li>
+        <li class="step"><span><strong>Tavsif</strong>ni kiriting (ixtiyoriy).</span></li>
+        <li class="step"><span><strong>"Saqlash"</strong> tugmasini bosing.</span></li>
+      </ol>
+
+      <div class="tip">
+        <p class="font-semibold text-green-800 m-0">Maslahat</p>
+        <p class="text-green-700 m-0 mt-1">
+          Fan nomi aniq va qisqa bo'lishi kerak. Masalan: <code>Matematika</code>, <code>Fizika</code>,
+          <code>Ingliz tili 9-sinf</code>. Bir xil nomli fan ikki marta yaratilmaydi.
+        </p>
+      </div>
+
+      <h3>4.2 Fanni tahrirlash</h3>
+      <p>
+        Jadvalda fanni topib, o'ng tarafdagi <strong>qalam</strong> (✏️) ikonkasini bosing.
+        Modal oynada ma'lumotlarni o'zgartirib, <strong>"Saqlash"</strong> ni bosing.
+      </p>
+
+      <h3>4.3 Fanni o'chirish</h3>
+      <p>
+        <strong>Qizil axlat</strong> (🗑) ikonkasini bosing. Tasdiqlash so'ralganda
+        <strong>"OK"</strong> ni tanlang.
+      </p>
+
+      <div class="warn">
+        <p class="font-semibold text-amber-800 m-0">Diqqat!</p>
+        <p class="text-amber-700 m-0 mt-1">
+          Agar fanda savollar mavjud bo'lsa, fan o'chirilmaydi.
+          Avval shu fandagi barcha savollarni o'chirib, keyin fanni o'chiring.
+        </p>
+      </div>
+
+      <h3>4.4 Jadval ustunlari</h3>
+      <table>
+        <thead><tr><th>Ustun</th><th>Ma'nosi</th></tr></thead>
+        <tbody>
+          <tr><td>Fan nomi</td><td>Fanning nomi</td></tr>
+          <tr><td>Tavsif</td><td>Qo'shimcha izoh</td></tr>
+          <tr><td>Savollar <span class="inline-block bg-indigo-100 text-indigo-700 px-1.5 rounded">ko'k</span></td><td>Ushbu fandagi savollar soni</td></tr>
+          <tr><td>Testlar <span class="inline-block bg-purple-100 text-purple-700 px-1.5 rounded">binafsha</span></td><td>Bu fan bo'yicha yaratilgan testlar soni</td></tr>
+        </tbody>
+      </table>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <h2 id="questions">5. Savollar boshqaruvi</h2>
+
+      <p>Chap menuda <strong>"Savollar"</strong> bo'limini tanlang.</p>
+
+      <h3>5.1 Yangi savol qo'shish (qo'lda)</h3>
+      <ol class="steps">
+        <li class="step"><span><strong>"Qo'shish"</strong> (ko'k) tugmasini bosing.</span></li>
+        <li class="step"><span><strong>Fan</strong>ni ro'yxatdan tanlang.</span></li>
+        <li class="step"><span><strong>Qiyinlik</strong>ni tanlang: Oson / O'rta / Qiyin.</span></li>
+        <li class="step"><span><strong>Savol matni</strong>ni kiriting.</span></li>
+        <li class="step"><span>To'rtta javob variantini kiriting: <strong>A, B, C, D</strong>.</span></li>
+        <li class="step"><span>To'g'ri javobni radiobutton orqali tanlang.</span></li>
+        <li class="step"><span><strong>"Saqlash"</strong>ni bosing.</span></li>
+      </ol>
+
+      <h3>5.2 Savolni tahrirlash</h3>
+      <p>
+        Jadvalda savolni topib, <strong>qalam</strong> ikonkasini bosing.
+        Barcha maydonlar modal oynada ko'rinadi — o'zgartiring va saqlang.
+      </p>
+
+      <h3>5.3 Savolni o'chirish</h3>
+      <p>
+        <strong>Axlat</strong> ikonkasini bosing va tasdiqlang.
+        O'chirilgan savol test tarixidan ham o'chirilmaydi (tarixiy ma'lumot saqlanadi).
+      </p>
+
+      <h3>5.4 Qidiruv va filtr</h3>
+      <p>Sahifa tepasidagi qidiruv paneli:</p>
+      <table>
+        <thead><tr><th>Maydon</th><th>Funksiya</th></tr></thead>
+        <tbody>
+          <tr><td>Qidirish (matn)</td><td>Savol matni bo'yicha qidiradi</td></tr>
+          <tr><td>Fan (dropdown)</td><td>Faqat tanlangan fanning savollarini ko'rsatadi</td></tr>
+          <tr><td>Qiyinlik</td><td>Oson / O'rta / Qiyin bo'yicha filtr</td></tr>
+          <tr><td>Tozalash</td><td>Barcha filtrlarni olib tashlaydi</td></tr>
+        </tbody>
+      </table>
+
+      <h3>5.5 Sahifalash (Pagination)</h3>
+      <p>
+        Bir sahifada <strong>15 ta</strong> savol ko'rsatiladi.
+        Pastdagi "← Oldingi" va "Keyingi →" tugmalar orqali o'tish mumkin.
+      </p>
+
+      <h3>5.6 Jadval ustunlari</h3>
+      <table>
+        <thead><tr><th>Ustun</th><th>Ma'nosi</th></tr></thead>
+        <tbody>
+          <tr><td>Savol</td><td>Savol matni (qisqartirilgan) + A, B variantlari ko'rinadi</td></tr>
+          <tr><td>Fan</td><td>Qaysi fanga tegishli</td></tr>
+          <tr><td>Javob <span class="inline-block bg-green-100 text-green-700 px-1.5 rounded font-bold">A</span></td><td>To'g'ri javob harfi (yashil doira)</td></tr>
+          <tr><td>Qiyinlik</td><td>Ko'k=Oson, Sariq=O'rta, Qizil=Qiyin</td></tr>
+        </tbody>
+      </table>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <h2 id="import">6. Excel orqali ommaviy import</h2>
+
+      <p>
+        Ko'p savolni bir vaqtda yuklash uchun Excel import xususiyatidan foydalaning.
+        Chap menuda <strong>"Excel Import"</strong> ni tanlang.
+      </p>
+
+      <h3>6.1 Excel fayl formati</h3>
+      <p>Faylda quyidagi ustunlar bo'lishi shart:</p>
+      <table>
+        <thead><tr><th>Ustun nomi</th><th>Majburiy?</th><th>Tavsif</th><th>Misol</th></tr></thead>
+        <tbody>
+          <tr><td><code>Question</code></td><td>✅ Ha</td><td>Savol matni</td><td>Suvning formulasi?</td></tr>
+          <tr><td><code>A</code></td><td>✅ Ha</td><td>A javob varianti</td><td>H₂O</td></tr>
+          <tr><td><code>B</code></td><td>✅ Ha</td><td>B javob varianti</td><td>CO₂</td></tr>
+          <tr><td><code>C</code></td><td>✅ Ha</td><td>C javob varianti</td><td>NaCl</td></tr>
+          <tr><td><code>D</code></td><td>✅ Ha</td><td>D javob varianti</td><td>O₂</td></tr>
+          <tr><td><code>Correct</code></td><td>✅ Ha</td><td>To'g'ri javob: A, B, C yoki D</td><td>A</td></tr>
+          <tr><td><code>Subject</code></td><td>❌ Yo'q</td><td>Fan nomi (avtomatik yaratiladi)</td><td>Kimyo</td></tr>
+          <tr><td><code>Difficulty</code></td><td>❌ Yo'q</td><td>easy / medium / hard</td><td>medium</td></tr>
+        </tbody>
+      </table>
+
+      <h3>6.2 Namuna fayllar</h3>
+      <p>Import sahifasida ikki tugma mavjud:</p>
+      <ul>
+        <li><strong>Bo'sh shablon</strong> — faqat sarlavhalar bilan bo'sh fayl (o'zingiz to'ldirasiz)</li>
+        <li><strong>63 ta namuna savol</strong> — 7 fandan tayyor savollar bilan fayl (darhol import qilish mumkin)</li>
+      </ul>
+
+      <h3>6.3 Importni amalga oshirish</h3>
+      <ol class="steps">
+        <li class="step"><span>Standart fan tanlang (agar Excel da Subject ustuni bo'lmasa).</span></li>
+        <li class="step"><span>Faylni "Fayl tanlash" tugmasi orqali tanlang <em>yoki</em> faylni maydon ustiga tashlang (drag & drop).</span></li>
+        <li class="step"><span><strong>"Yuklash va Import Qilish"</strong> tugmasini bosing.</span></li>
+        <li class="step"><span>Natija ko'rsatiladi: nechta qo'shildi, nechta o'tkazib yuborildi, xatolar.</span></li>
+      </ol>
+
+      <h3>6.4 Import natijasi</h3>
+      <table>
+        <thead><tr><th>Natija</th><th>Ma'nosi</th></tr></thead>
+        <tbody>
+          <tr><td><span class="text-green-700 font-semibold">Muvaffaqiyatli qo'shildi</span></td><td>Bazaga yozilgan savollar soni</td></tr>
+          <tr><td><span class="text-gray-600 font-semibold">O'tkazib yuborildi</span></td><td>Bo'sh qatorlar soni</td></tr>
+          <tr><td><span class="text-red-600 font-semibold">Xatolar</span></td><td>Qaysi qatorda nima xato (qator raqami bilan)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="tip">
+        <p class="font-semibold text-green-800 m-0">Excel tayyorlash bo'yicha maslahatlar</p>
+        <ul class="text-green-700 m-0 mt-1 pl-4">
+          <li>Correct ustunida faqat bosh harf yozing: A, B, C, D (kichik harf ham qabul qilinadi)</li>
+          <li>Subject ustunidagi fan nomi avvalgi fanlar bilan mos bo'lishi shart emas — yangi fan avtomatik yaratiladi</li>
+          <li>Difficulty bo'lmasa, barcha savollar "O'rta" darajaga o'tadi</li>
+          <li>Fayl hajmi 10 MB dan oshmasligi kerak</li>
+        </ul>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <h2 id="generator">7. Test yaratish (Generator)</h2>
+
+      <p>
+        Chap menuda <strong>"Test Yaratish"</strong> bo'limini tanlang.
+        Bu tizimning asosiy funksiyasi.
+      </p>
+
+      <h3>7.1 Maydonlar</h3>
+      <table>
+        <thead><tr><th>Maydon</th><th>Majburiy?</th><th>Tavsif</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Fan</strong></td><td>✅</td><td>Test qaysi fan bo'yicha yaratiladi. Ro'yxatda fan nomi va savol soni ko'rinadi.</td></tr>
+          <tr><td><strong>Test nomi</strong></td><td>❌</td><td>Fayllar nomi va sarlavhasi uchun. Bo'sh qoldirilsa fan nomi ishlatiladi.</td></tr>
+          <tr><td><strong>Variant soni</strong></td><td>✅</td><td>Nechta alohida variant yaratilsin (1–200). Masalan: 30 ta o'quvchi = 30 variant.</td></tr>
+          <tr><td><strong>Har variant savollar</strong></td><td>✅</td><td>Har bir variantda nechta savol bo'lsin (1–100). Bazadagi savollar sonidan oshmasligi kerak.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>7.2 Misol ssenariy</h3>
+      <div class="info">
+        <p class="font-semibold text-blue-800 m-0">Misol: Matematika imtihoni</p>
+        <ul class="text-blue-700 m-0 mt-1 pl-4">
+          <li>Fan: <code>Matematika</code> (bazada 150 ta savol bor)</li>
+          <li>Test nomi: <code>2-chorak nazorat ishi</code></li>
+          <li>Variant soni: <code>35</code> (sinfda 35 o'quvchi)</li>
+          <li>Har variantda savol: <code>20</code></li>
+        </ul>
+        <p class="text-blue-700 m-0 mt-2">
+          Natija: 35 ta alohida variant, har birida 20 ta savol, javob variantlari har xil joylashuvda.
+        </p>
+      </div>
+
+      <h3>7.3 Generatsiya jarayoni</h3>
+      <p>
+        <strong>"Test Generatsiya Qilish"</strong> tugmasini bosing.
+        Tizim ushbu amallarni bajaradi (bir necha soniya davom etadi):
+      </p>
+      <ol>
+        <li>Tanlangan fandan barcha savollarni oladi</li>
+        <li>Har variant uchun savollari tanlab, tartibini aralashtiradi</li>
+        <li>Har savol uchun A/B/C/D javoblarni yangi tartibda joylashtiradi</li>
+        <li>To'g'ri javob harfini qayta hisoblaydi</li>
+        <li>Barcha ma'lumotlarni bazaga saqlaydi</li>
+        <li>Natija sahifasiga o'tkazadi</li>
+      </ol>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <h2 id="download">8. Fayllarni yuklab olish</h2>
+
+      <p>
+        Test yaratilgandan so'ng <strong>Natija sahifasi</strong>da uchta yuklab olish tugmasi
+        paydo bo'ladi:
+      </p>
+
+      <h3>8.1 Testlar.docx (Word)</h3>
+      <ul>
+        <li>Har bir variant <strong>alohida sahifada</strong> joylashgan</li>
+        <li>Har variant boshida: variant raqami, fan nomi, F.I.O va sana maydonlari</li>
+        <li>Savollar 1-dan N gacha raqamlangan</li>
+        <li>Javob variantlari: <code>A) ... B) ... C) ... D) ...</code> formatida</li>
+        <li>Chop etish uchun tayyor format</li>
+      </ul>
+
+      <h3>8.2 Javoblar_kaliti.docx (Word)</h3>
+      <ul>
+        <li>Barcha variantlar uchun to'g'ri javoblar</li>
+        <li>30 tagacha savol bo'lsa — jadval ko'rinishida (qator=variant, ustun=savol raqami)</li>
+        <li>30 dan ortiq savol bo'lsa — qatorli format (1-A, 2-C, 3-B, ...)</li>
+        <li>O'qituvchi uchun tekshirish qulay</li>
+      </ul>
+
+      <h3>8.3 Test.xlsx (Excel)</h3>
+      <p>Excel faylida <strong>3 ta varaq (sheet)</strong> mavjud:</p>
+      <table>
+        <thead><tr><th>Varaq nomi</th><th>Tarkib</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Variantlar</strong></td><td>Har variant bloki: savol, A/B/C/D, to'g'ri javob — kompyuterda ko'rish uchun qulay</td></tr>
+          <tr><td><strong>Kalit</strong></td><td>Javoblar kaliti jadvali: variant × savol → javob harfi</td></tr>
+          <tr><td><strong>Print (1–5)</strong></td><td>Birinchi 5 variant chop etish uchun sodda format</td></tr>
+        </tbody>
+      </table>
+
+      <h3>8.4 Fayllarni qayerdan yuklab olsa bo'ladi</h3>
+      <ul>
+        <li><strong>Natija sahifasi</strong> — test yaratilgandan darhol so'ng</li>
+        <li><strong>Test tarixi</strong> — avvalgi testlarni ham qayta yuklab olish mumkin</li>
+      </ul>
+
+      <div class="tip">
+        <p class="font-semibold text-green-800 m-0">Chop etish bo'yicha maslahat</p>
+        <p class="text-green-700 m-0 mt-1">
+          Word faylini Word dasturida ochib, <strong>Ctrl+P</strong> orqali chop eting.
+          "Sahifaga mos qilish" parametrini yoqing. A4 formatda chop etilishi tavsiya etiladi.
+        </p>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <h2 id="history">9. Test tarixi</h2>
+
+      <p>Chap menuda <strong>"Test Tarixi"</strong> bo'limini tanlang.</p>
+      <p>Bu sahifada barcha ilgari yaratilgan testlar ro'yxati ko'rsatiladi.</p>
+
+      <h3>9.1 Jadval ustunlari</h3>
+      <table>
+        <thead><tr><th>Ustun</th><th>Ma'nosi</th></tr></thead>
+        <tbody>
+          <tr><td>Nomi</td><td>Test nomi</td></tr>
+          <tr><td>Fan</td><td>Qaysi fan bo'yicha</td></tr>
+          <tr><td>Variantlar <span class="bg-indigo-100 text-indigo-700 px-1.5 rounded text-xs">ko'k</span></td><td>Yaratilgan variantlar soni</td></tr>
+          <tr><td>Savollar <span class="bg-gray-100 text-gray-700 px-1.5 rounded text-xs">kulrang</span></td><td>Har variantdagi savol soni</td></tr>
+          <tr><td>Sana</td><td>Yaratilgan vaqt</td></tr>
+        </tbody>
+      </table>
+
+      <h3>9.2 Amallar (har qator uchun)</h3>
+      <table>
+        <thead><tr><th>Ikonka</th><th>Funksiya</th></tr></thead>
+        <tbody>
+          <tr><td>👁 Ko'z (binafsha)</td><td>Natija sahifasiga o'tish (preview, yuklab olish)</td></tr>
+          <tr><td>📄 Hujjat (ko'k)</td><td>Testlar.docx ni yuklab olish</td></tr>
+          <tr><td>🔑 Kalit (yashil)</td><td>Javoblar_kaliti.docx ni yuklab olish</td></tr>
+          <tr><td>📊 Jadval (tarvuzrang)</td><td>Test.xlsx ni yuklab olish</td></tr>
+          <tr><td>🗑 Axlat (qizil)</td><td>Testni o'chirish (qaytarib bo'lmaydi!)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>9.3 Sahifalash</h3>
+      <p>Bir sahifada 10 ta test ko'rsatiladi. Ko'p test bo'lsa "← Oldingi" / "Keyingi →" orqali o'ting.</p>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <h2 id="algorithm">10. Randomizatsiya algoritmi</h2>
+
+      <p>
+        Tizim variantlarni maksimal farqli qilib yaratish uchun
+        maxsus algoritm qo'llaydi:
+      </p>
+
+      <h3>10.1 Savol tanlash algoritmi</h3>
+      <ol>
+        <li>Har bir savol uchun <strong>ishlatilish hisoblagich</strong> (usage count) yuritiladi</li>
+        <li>Yangi variant yaratishda savollar <strong>kamroq ishlatilgan birinchi</strong> tartibida saralanadi</li>
+        <li>Teng ishlatilgan savollar uchun <strong>tasodifiy</strong> tartib qo'llanadi</li>
+        <li>Tanlangan savollar tartibga solinib, yana bir bor <strong>aralashtiriladi</strong></li>
+      </ol>
+
+      <h3>10.2 Javoblarni aralashtirish</h3>
+      <ol>
+        <li>Asl savoldagi A, B, C, D javoblar olinadi</li>
+        <li>Fisher-Yates algoritmi bilan <strong>yangi tartib</strong>da joylanadi</li>
+        <li>To'g'ri javob yangi pozitsiyasiga qarab <strong>avtomatik qayta hisoblanadi</strong></li>
+      </ol>
+
+      <div class="info">
+        <p class="font-semibold text-blue-800 m-0">Misol</p>
+        <p class="text-blue-700 m-0 mt-1">
+          Asl savol: <code>A=London, B=Paris✓, C=Berlin, D=Rome</code><br/>
+          1-variant: <code>A=Berlin, B=London, C=Paris✓, D=Rome</code> → To'g'ri: <strong>C</strong><br/>
+          2-variant: <code>A=Rome, B=Paris✓, C=Berlin, D=London</code> → To'g'ri: <strong>B</strong>
+        </p>
+      </div>
+
+      <h3>10.3 Farqlilik kafolati</h3>
+      <p>
+        Agar bazada yetarlicha savol bo'lsa (masalan 100 ta savol, 20 ta variant uchun),
+        har variant boshqa variantdan sezilarli darajada farq qiladi.
+        Savolar takrorlanishini minimallashtirish uchun usage count tizimi ishlatiladi.
+      </p>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <h2 id="excel-format">11. Excel fayl tayyorlash bo'yicha to'liq ko'rsatma</h2>
+
+      <h3>11.1 Microsoft Excel da yaratish</h3>
+      <ol class="steps">
+        <li class="step"><span>Yangi Excel fayl oching (<code>Ctrl+N</code>).</span></li>
+        <li class="step"><span>1-qatorga sarlavhalar kiriting (aniq shu nomlar bilan):</span></li>
+      </ol>
+      <div class="screen">A1: Question   B1: A   C1: B   D1: C   E1: D   F1: Correct   G1: Subject   H1: Difficulty</div>
+      <ol class="steps" start="3">
+        <li class="step"><span>2-qatordan boshlab savollarni kiriting.</span></li>
+        <li class="step"><span>Faylni <strong>.xlsx</strong> formatda saqlang.</span></li>
+      </ol>
+
+      <h3>11.2 Google Sheets da yaratish</h3>
+      <ol class="steps">
+        <li class="step"><span>sheets.google.com ga kiring, yangi jadval yarating.</span></li>
+        <li class="step"><span>Sarlavhalarni va savollarni kiriting.</span></li>
+        <li class="step"><span><strong>Fayl → Yuklab olish → Microsoft Excel (.xlsx)</strong> ni tanlang.</span></li>
+      </ol>
+
+      <h3>11.3 Keng tarqalgan xatolar</h3>
+      <table>
+        <thead><tr><th>Xato</th><th>Sabab</th><th>Yechim</th></tr></thead>
+        <tbody>
+          <tr><td>Correct ustuni xato</td><td>a, b, c yoki boshqa belgi kiritilgan</td><td>Faqat A, B, C yoki D yozing</td></tr>
+          <tr><td>Savol import bo'lmadi</td><td>Biror A/B/C/D maydon bo'sh</td><td>To'rtta javob majburiy</td></tr>
+          <tr><td>Fan topilmadi</td><td>Subject ustuni yo'q, standart fan tanlanmagan</td><td>Import sahifasida standart fan tanlang</td></tr>
+          <tr><td>Fayl ochilmadi</td><td>.csv yoki boshqa format</td><td>Faqat .xlsx yoki .xls fayllar qabul qilinadi</td></tr>
+        </tbody>
+      </table>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <h2 id="faq">12. Ko'p so'raladigan savollar (FAQ)</h2>
+
+      <h4>❓ Nechta savol bo'lsa to'g'ri ishlaydi?</h4>
+      <p>
+        Minimum: <strong>variant savolidan 1 ta ko'p</strong> (masalan, 20 savollik test uchun kamida 21 ta savol).
+        Tavsiya: variant savolining kamida <strong>3–5 barobari</strong> bo'lishi farqlilikni ta'minlaydi.
+      </p>
+
+      <h4>❓ Javoblar kaliti qaerda?</h4>
+      <p>
+        Natija sahifasida <strong>"Javoblar_kaliti.docx"</strong> yoki <strong>"Test.xlsx → Kalit"</strong>
+        varag'ida ko'rish mumkin. Kalitni o'quvchilarga ko'rsatmang!
+      </p>
+
+      <h4>❓ Bir variantda savol takrorlanadimi?</h4>
+      <p>
+        <strong>Yo'q.</strong> Bir variant ichida hech qachon bir savol ikki marta chiqmaydi.
+        Bu algoritmik kafolat.
+      </p>
+
+      <h4>❓ Turli variantlarda bir savol bo'lishi mumkinmi?</h4>
+      <p>
+        <strong>Ha</strong> — agar bazadagi savollar soni (variant soni × savol soni) dan kam bo'lsa.
+        Masalan, 50 ta savol bo'lsa va 30 variantda 20 ta savol so'rasa (30×20=600), savollar takrorlanadi.
+        Lekin tizim takrorlanishni minimum darajaga tushirishga harakat qiladi.
+      </p>
+
+      <h4>❓ Eski testlarni qayta yuklab olsa bo'ladimi?</h4>
+      <p>
+        <strong>Ha.</strong> Test tarixi sahifasida barcha avvalgi testlar saqlanadi va
+        istalgan vaqt qayta yuklab olinadi.
+      </p>
+
+      <h4>❓ Ko'p fanning savollarini bitta testga aralashtirish mumkinmi?</h4>
+      <p>
+        Hozircha <strong>yo'q</strong>. Har bir test faqat bitta fan bo'yicha yaratiladi.
+        Aralash test kerak bo'lsa, yangi fan yaratib (masalan "Umumiy test"),
+        barcha savollarni shu fanga kiritish mumkin.
+      </p>
+
+      <h4>❓ Test yaratib bo'lgach o'zgartirish mumkinmi?</h4>
+      <p>
+        <strong>Yo'q.</strong> Yaratilgan test o'zgartirilmaydi. Yangi parametrlar bilan
+        yangisini yaratish kerak.
+      </p>
+
+      <h4>❓ Parolni qanday o'zgartiraman?</h4>
+      <p>
+        <code>.env</code> faylda <code>ADMIN_PASSWORD</code>ni o'zgartiring va
+        <code>node prisma/seed.js</code>ni qayta ishga tushiring.
+      </p>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <h2 id="tips">13. Samarali foydalanish bo'yicha maslahatlar</h2>
+
+      <h3>Savollar bazasini to'g'ri tashkil qilish</h3>
+      <ul>
+        <li>Har bir fan uchun kamida <strong>50–100 ta savol</strong> to'plang — variantlar yanada farqliroq chiqadi</li>
+        <li>Savollarni uch darajaga bo'ling: oson (40%), o'rta (40%), qiyin (20%)</li>
+        <li>Javob variantlari mazmunli va chalg'ituvchi bo'lsin — "Noto'g'ri", "Yo'qi" kabi emas</li>
+        <li>Savol matni qisqa va aniq bo'lsin</li>
+      </ul>
+
+      <h3>Excel import orqali tez to'ldirish</h3>
+      <ul>
+        <li>Avval <strong>namuna faylni yuklab</strong> oling va shu asosda to'ldiring</li>
+        <li>Katta Excel fayllarni 500-1000 qatorlik bo'laklarga bo'lib yuklang</li>
+        <li>Har import oldidan xatolar ustunini tekshiring</li>
+      </ul>
+
+      <h3>Test yaratishda</h3>
+      <ul>
+        <li>Har bir o'quvchi uchun alohida variant yarating (sinfda 35 ta o'quvchi = 35 variant)</li>
+        <li>Test nomini mazmunli qiling: <code>10-sinf Matematika 1-chorak</code></li>
+        <li>Chop etishdan oldin Word faylni oching va bir variantni ko'rib chiqing</li>
+        <li>Javoblar kalitini alohida printer bilan chop eting (o'quvchilar ko'rmasligi uchun)</li>
+      </ul>
+
+      <h3>Xavfsizlik</h3>
+      <ul>
+        <li>Har kungi ish tugagach tizimdan <strong>chiqib keting</strong> (Logout)</li>
+        <li><code>.env</code> fayldagi <code>SESSION_SECRET</code>ni murakkab qilib o'rnatish</li>
+        <li>Javoblar kaliti faylini xavfsiz saqlang</li>
+      </ul>
+
+      <div class="tip" style="margin-top: 2rem;">
+        <p class="font-semibold text-green-800 m-0">Samarali ish tartibi (tavsiya)</p>
+        <ol class="text-green-700 m-0 mt-1 pl-4">
+          <li>Fanlarni yarating</li>
+          <li>Excel orqali savollarni bulk import qiling</li>
+          <li>Ba'zi savollarni qo'lda tekshirib, kerak bo'lsa tahrirlang</li>
+          <li>Test yarating (fan + variant soni + savol soni)</li>
+          <li>Word fayllarni yuklab oling va chop eting</li>
+          <li>Testlar.docx ni o'quvchilarga, Javoblar_kaliti.docx ni o'qituvchida saqlang</li>
+        </ol>
+      </div>
+
+    </div><!-- /prose -->
+
+    <!-- FOOTER -->
+    <div class="mt-6 text-center text-gray-400 text-xs pb-8">
+      <p>Random Test Generator &nbsp;·&nbsp; v1.0.0 &nbsp;·&nbsp; 2024</p>
+      <p class="mt-1">Barcha huquqlar himoyalangan</p>
+    </div>
+
+  </div><!-- /main content -->
+</div><!-- /flex wrapper -->
+
+<script>
+// Highlight active section in nav on scroll
+const sections = document.querySelectorAll('[id]');
+const navLinks = document.querySelectorAll('nav a[href^="#"]');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.remove('bg-indigo-50', 'text-indigo-700', 'font-semibold');
+    if (a.getAttribute('href') === '#' + current) {
+      a.classList.add('bg-indigo-50', 'text-indigo-700', 'font-semibold');
+    }
+  });
+});
+</script>
+
+</body>
+</html>

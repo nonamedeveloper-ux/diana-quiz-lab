@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subject {
+  id          Int             @id @default(autoincrement())
+  name        String          @unique
+  description String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  questions   Question[]
+  tests       GeneratedTest[]
+}
+
+model Question {
+  id            Int                 @id @default(autoincrement())
+  subjectId     Int
+  text          String
+  optionA       String
+  optionB       String
+  optionC       String
+  optionD       String
+  correctAnswer String
+  difficulty    String              @default("medium")
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  subject       Subject             @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  testQuestions GeneratedQuestion[]
+}
+
+model GeneratedTest {
+  id                  Int                 @id @default(autoincrement())
+  title               String
+  subjectId           Int
+  totalVariants       Int
+  questionsPerVariant Int
+  createdAt           DateTime            @default(now())
+  subject             Subject             @relation(fields: [subjectId], references: [id])
+  questions           GeneratedQuestion[]
+}
+
+model GeneratedQuestion {
+  id            Int           @id @default(autoincrement())
+  testId        Int
+  questionId    Int
+  variantNumber Int
+  position      Int
+  shuffledA     String
+  shuffledB     String
+  shuffledC     String
+  shuffledD     String
+  correctAnswer String
+  questionText  String
+  test          GeneratedTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+  question      Question      @relation(fields: [questionId], references: [id])
+}

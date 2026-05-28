@@ -1,0 +1,103 @@
+<aside class="w-60 bg-indigo-900 flex flex-col flex-shrink-0 h-full">
+  <!-- Brand -->
+  <div class="px-5 py-5 border-b border-indigo-800">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 bg-indigo-400 rounded-lg flex items-center justify-center">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </div>
+      <div>
+        <p class="text-white font-bold text-sm leading-tight">Test Generator</p>
+        <p class="text-indigo-300 text-xs">Admin Panel</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+    <p class="text-indigo-400 text-xs uppercase font-semibold px-2 mb-2 tracking-wider">Asosiy</p>
+
+    <a href="/dashboard"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+              <%= locals.title && locals.title.includes('Dashboard') ? 'bg-indigo-600 text-white' : 'text-indigo-200 hover:bg-indigo-800 hover:text-white' %>">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+      </svg>
+      Dashboard
+    </a>
+
+    <p class="text-indigo-400 text-xs uppercase font-semibold px-2 mb-2 mt-4 tracking-wider">Ma'lumotlar</p>
+
+    <a href="/subjects"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+              <%= locals.title && locals.title.includes('Fan') ? 'bg-indigo-600 text-white' : 'text-indigo-200 hover:bg-indigo-800 hover:text-white' %>">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+      </svg>
+      Fanlar
+    </a>
+
+    <a href="/questions"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+              <%= locals.title === 'Savollar' ? 'bg-indigo-600 text-white' : 'text-indigo-200 hover:bg-indigo-800 hover:text-white' %>">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      Savollar
+    </a>
+
+    <a href="/questions/import"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+              <%= locals.title === 'Excel Import' ? 'bg-indigo-600 text-white' : 'text-indigo-200 hover:bg-indigo-800 hover:text-white' %>">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+      </svg>
+      Excel Import
+    </a>
+
+    <p class="text-indigo-400 text-xs uppercase font-semibold px-2 mb-2 mt-4 tracking-wider">Test</p>
+
+    <a href="/generator"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+              <%= locals.title === 'Test Yaratish' ? 'bg-indigo-600 text-white' : 'text-indigo-200 hover:bg-indigo-800 hover:text-white' %>">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M13 10V3L4 14h7v7l9-11h-7z"/>
+      </svg>
+      Test Yaratish
+    </a>
+
+    <a href="/generator/history"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+              <%= locals.title === 'Test Tarixi' ? 'bg-indigo-600 text-white' : 'text-indigo-200 hover:bg-indigo-800 hover:text-white' %>">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      Test Tarixi
+    </a>
+  </nav>
+
+    <p class="text-indigo-400 text-xs uppercase font-semibold px-2 mb-2 mt-4 tracking-wider">Yordam</p>
+
+    <a href="/guide"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+              <%= locals.title && locals.title.includes('Qo\'llanma') ? 'bg-indigo-600 text-white' : 'text-indigo-200 hover:bg-indigo-800 hover:text-white' %>">
+      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+      </svg>
+      Qo'llanma
+    </a>
+
+  <!-- Footer -->
+  <div class="px-4 py-3 border-t border-indigo-800 mt-4">
+    <p class="text-indigo-400 text-xs text-center">v1.0.0 &nbsp;·&nbsp; 2024</p>
+  </div>
+</aside>

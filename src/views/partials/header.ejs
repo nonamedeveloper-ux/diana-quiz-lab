@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="uz" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> — Test Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .sidebar-link { @apply flex items-center gap-3 px-4 py-2.5 rounded-lg text-indigo-200 hover:bg-indigo-700 hover:text-white transition-all text-sm font-medium; }
+    .sidebar-link.active { @apply bg-indigo-600 text-white shadow; }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    /* Table hover */
+    tr:hover td { background-color: #f8fafc; }
+    /* Transitions */
+    .modal-backdrop { animation: fadeIn 0.15s ease; }
+    @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+    .modal-box { animation: slideUp 0.2s ease; }
+    @keyframes slideUp { from { transform:translateY(20px); opacity:0 } to { transform:translateY(0); opacity:1 } }
+  </style>
+</head>
+<body class="bg-gray-50 h-full">
+<div class="flex h-screen overflow-hidden">
+
+  <!-- SIDEBAR -->
+  <%- include('./sidebar') %>
+
+  <!-- MAIN -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+
+    <!-- TOP BAR -->
+    <header class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between flex-shrink-0">
+      <h1 class="text-lg font-semibold text-gray-800"><%= title %></h1>
+      <div class="flex items-center gap-4">
+        <% if (user) { %>
+          <span class="text-sm text-gray-500">
+            <svg class="inline w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            <%= user.username %>
+          </span>
+          <a href="/auth/logout" class="text-sm text-red-500 hover:text-red-700 font-medium flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            Chiqish
+          </a>
+        <% } %>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="flex-1 overflow-y-auto p-6">
+      <%- include('./flash') %>

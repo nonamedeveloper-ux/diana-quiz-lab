@@ -1,0 +1,117 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-2xl mx-auto">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+
+    <div class="mb-8 text-center">
+      <div class="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
+        <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+      </div>
+      <h2 class="text-xl font-bold text-gray-800">Test Generatsiya Qilish</h2>
+      <p class="text-gray-500 text-sm mt-1">Parametrlarni tanlang va random testlar yarating</p>
+    </div>
+
+    <form method="POST" action="/generator" class="space-y-5" id="genForm">
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Fan <span class="text-red-500">*</span></label>
+        <select name="subjectId" id="subjectId" required onchange="updateQCount()"
+          class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+          <option value="">— Fan tanlang —</option>
+          <% for (const s of subjects) { %>
+            <option value="<%= s.id %>" data-count="<%= s._count.questions %>">
+              <%= s.name %> (<%= s._count.questions %> ta savol)
+            </option>
+          <% } %>
+        </select>
+        <p id="qAvail" class="text-xs text-gray-400 mt-1.5"></p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Test nomi</label>
+        <input type="text" name="title" placeholder="Masalan: 1-chorak test — Matematika"
+          class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"/>
+        <p class="text-xs text-gray-400 mt-1">Bo'sh qoldirsangiz, fan nomi avtomatik qo'yiladi</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Variant soni <span class="text-red-500">*</span>
+          </label>
+          <input type="number" name="variantCount" required min="1" max="200" value="30"
+            class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold text-lg"/>
+          <p class="text-xs text-gray-400 mt-1 text-center">1 — 200</p>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Har variant savollar <span class="text-red-500">*</span>
+          </label>
+          <input type="number" name="questionsPerVariant" id="questionsPerVariant" required min="1" max="100" value="20"
+            class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center font-bold text-lg"/>
+          <p class="text-xs text-gray-400 mt-1 text-center">1 — 100</p>
+        </div>
+      </div>
+
+      <!-- Info box -->
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+        <div class="flex items-start gap-2">
+          <svg class="w-5 h-5 flex-shrink-0 text-amber-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <div>
+            <p class="font-semibold mb-1">Muhim qoidalar:</p>
+            <ul class="space-y-0.5 text-xs">
+              <li>• Har bir variant ichida savol takrorlanmaydi</li>
+              <li>• Variantlar maksimal farqli chiqadi</li>
+              <li>• Javob variantlari har doim random tartibda</li>
+              <li>• To'g'ri javob avtomatik qayta hisoblanadi</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" id="genBtn"
+        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-6 rounded-xl text-sm transition-colors flex items-center justify-center gap-2 shadow-sm">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        Test Generatsiya Qilish
+      </button>
+    </form>
+
+  </div>
+
+  <% if (subjects.length === 0) { %>
+  <div class="mt-4 bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-sm text-yellow-800 flex items-center gap-2">
+    <svg class="w-5 h-5 text-yellow-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    Avval <a href="/subjects" class="underline font-semibold">fan</a> va <a href="/questions" class="underline font-semibold">savollar</a> qo'shing.
+  </div>
+  <% } %>
+</div>
+
+<script>
+function updateQCount() {
+  const sel = document.getElementById('subjectId');
+  const opt = sel.options[sel.selectedIndex];
+  const count = parseInt(opt?.dataset?.count || 0);
+  const el = document.getElementById('qAvail');
+  if (count > 0) {
+    el.textContent = `Bu fanda ${count} ta savol mavjud`;
+    el.className = 'text-xs text-green-600 mt-1.5';
+    document.getElementById('questionsPerVariant').max = count;
+  } else {
+    el.textContent = '';
+  }
+}
+
+document.getElementById('genForm').addEventListener('submit', function() {
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg> Generatsiya qilinmoqda...';
+});
+</script>
+
+<%- include('../partials/footer') %>

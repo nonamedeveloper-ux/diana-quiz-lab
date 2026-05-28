@@ -1,0 +1,204 @@
+<%- include('../partials/header') %>
+
+<!-- Header card -->
+<div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white mb-6">
+  <div class="flex items-start justify-between">
+    <div>
+      <p class="text-indigo-200 text-xs uppercase tracking-wider font-semibold mb-1">Muvaffaqiyatli yaratildi!</p>
+      <h2 class="text-2xl font-bold"><%= test.title %></h2>
+      <p class="text-indigo-200 mt-1">Fan: <%= test.subject.name %></p>
+    </div>
+    <div class="text-right bg-white/10 rounded-xl px-5 py-3">
+      <p class="text-3xl font-bold"><%= test.totalVariants %></p>
+      <p class="text-indigo-200 text-sm">variant</p>
+    </div>
+  </div>
+  <div class="grid grid-cols-3 gap-4 mt-5 pt-5 border-t border-white/20">
+    <div>
+      <p class="text-2xl font-bold"><%= test.questionsPerVariant %></p>
+      <p class="text-indigo-200 text-xs">har variantda savol</p>
+    </div>
+    <div>
+      <p class="text-2xl font-bold"><%= test.totalVariants * test.questionsPerVariant %></p>
+      <p class="text-indigo-200 text-xs">jami savol yozuvi</p>
+    </div>
+    <div>
+      <p class="text-sm font-medium"><%= new Date(test.createdAt).toLocaleString('uz-UZ') %></p>
+      <p class="text-indigo-200 text-xs">yaratilgan vaqt</p>
+    </div>
+  </div>
+</div>
+
+<!-- Download buttons -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+  <a href="/generator/<%= test.id %>/download/tests"
+    class="bg-white border border-gray-200 shadow-sm hover:shadow-md rounded-xl p-5 flex items-center gap-4 transition-all group">
+    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-blue-200 transition-colors">
+      <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+    </div>
+    <div>
+      <p class="font-semibold text-gray-800">Testlar.docx</p>
+      <p class="text-xs text-gray-500 mt-0.5"><%= test.totalVariants %> variant &middot; Word</p>
+    </div>
+  </a>
+
+  <a href="/generator/<%= test.id %>/download/key"
+    class="bg-white border border-gray-200 shadow-sm hover:shadow-md rounded-xl p-5 flex items-center gap-4 transition-all group">
+    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
+      <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+      </svg>
+    </div>
+    <div>
+      <p class="font-semibold text-gray-800">Javoblar_kaliti.docx</p>
+      <p class="text-xs text-gray-500 mt-0.5">Barcha variantlar kaliti</p>
+    </div>
+  </a>
+
+  <a href="/generator/<%= test.id %>/download/excel"
+    class="bg-white border border-gray-200 shadow-sm hover:shadow-md rounded-xl p-5 flex items-center gap-4 transition-all group">
+    <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-200 transition-colors">
+      <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18M10 3v18M6 3h12a3 3 0 013 3v12a3 3 0 01-3 3H6a3 3 0 01-3-3V6a3 3 0 013-3z"/>
+      </svg>
+    </div>
+    <div>
+      <p class="font-semibold text-gray-800">Test.xlsx</p>
+      <p class="text-xs text-gray-500 mt-0.5">Excel format &middot; Kalit bilan</p>
+    </div>
+  </a>
+</div>
+
+<!-- Preview -->
+<% if (preview) { %>
+<div class="bg-white rounded-xl border border-gray-100 shadow-sm mb-6">
+  <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+    <h3 id="previewTitle" class="font-semibold text-gray-800">Ko'rib chiqish — 1-VARIANT</h3>
+    <div class="flex gap-2">
+      <% for (let i = 1; i <= Math.min(variants.length, 5); i++) { %>
+        <button onclick="showVariant(<%= i %>)"
+          id="varBtn<%= i %>"
+          class="px-2.5 py-1 text-xs rounded-lg font-medium transition-colors
+                 <%= i === 1 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' %>">
+          <%= i %>
+        </button>
+      <% } %>
+      <% if (variants.length > 5) { %>
+        <span class="px-2.5 py-1 text-xs text-gray-400">+<%= variants.length - 5 %> ta</span>
+      <% } %>
+    </div>
+  </div>
+  <div id="variantContent" class="p-6 space-y-4 max-h-96 overflow-y-auto">
+    <%
+      var sorted0 = preview.questions.slice().sort(function(a,b){ return a.position - b.position; });
+      for (var qi = 0; qi < sorted0.length; qi++) {
+        var q0 = sorted0[qi];
+    %>
+    <div class="border-b border-gray-100 pb-4 last:border-0">
+      <p class="font-semibold text-gray-800 text-sm mb-2"><%= q0.position %>. <%= q0.questionText %></p>
+      <div class="grid grid-cols-2 gap-1 text-sm">
+        <span class="text-gray-600"><strong class="text-gray-800">A)</strong> <%= q0.shuffledA %></span>
+        <span class="text-gray-600"><strong class="text-gray-800">B)</strong> <%= q0.shuffledB %></span>
+        <span class="text-gray-600"><strong class="text-gray-800">C)</strong> <%= q0.shuffledC %></span>
+        <span class="text-gray-600"><strong class="text-gray-800">D)</strong> <%= q0.shuffledD %></span>
+      </div>
+      <p class="text-xs text-green-600 mt-1.5 font-semibold">&#10003; To'g'ri javob: <%= q0.correctAnswer %></p>
+    </div>
+    <% } %>
+  </div>
+</div>
+<% } %>
+
+<!-- Answer key preview table -->
+<div class="bg-white rounded-xl border border-gray-100 shadow-sm">
+  <div class="px-6 py-4 border-b border-gray-100">
+    <h3 class="font-semibold text-gray-800">Javoblar kaliti — ko'rib chiqish</h3>
+  </div>
+  <div class="p-6 overflow-x-auto">
+    <table class="text-xs w-full border-collapse">
+      <thead>
+        <tr class="bg-gray-50">
+          <th class="px-3 py-2 text-left font-semibold text-gray-600 border border-gray-200">Variant</th>
+          <% if (preview) { %>
+            <% var hqs = preview.questions.slice().sort(function(a,b){return a.position-b.position;}); %>
+            <% for (var hi = 0; hi < hqs.length; hi++) { %>
+              <th class="px-2 py-2 font-semibold text-gray-600 border border-gray-200 text-center"><%= hqs[hi].position %></th>
+            <% } %>
+          <% } %>
+        </tr>
+      </thead>
+      <tbody>
+        <% var showVars = variants.slice(0, 10); %>
+        <% for (var vi = 0; vi < showVars.length; vi++) { %>
+          <% var sv = showVars[vi]; %>
+          <% var svqs = sv.questions.slice().sort(function(a,b){return a.position-b.position;}); %>
+          <tr class="hover:bg-gray-50">
+            <td class="px-3 py-1.5 font-bold text-gray-700 border border-gray-200"><%= sv.variantNumber %></td>
+            <% for (var svi = 0; svi < svqs.length; svi++) { %>
+              <% var svq = svqs[svi]; %>
+              <td class="px-2 py-1.5 text-center font-bold border border-gray-200
+                <%= svq.correctAnswer === 'A' ? 'text-blue-600' : svq.correctAnswer === 'B' ? 'text-green-600' : svq.correctAnswer === 'C' ? 'text-orange-600' : 'text-purple-600' %>">
+                <%= svq.correctAnswer %>
+              </td>
+            <% } %>
+          </tr>
+        <% } %>
+        <% if (variants.length > 10) { %>
+          <tr>
+            <td colspan="999" class="px-3 py-2 text-center text-gray-400 text-xs border border-gray-200">
+              ... va yana <%= variants.length - 10 %> ta variant (Word/Excel faylida to'liq)
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Actions -->
+<div class="mt-6 flex gap-3">
+  <a href="/generator" class="flex items-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    Yangi test yaratish
+  </a>
+  <a href="/generator/history" class="flex items-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    Tarix
+  </a>
+</div>
+
+<script>
+const allVariants = <%- JSON.stringify(variants) %>;
+
+function showVariant(num) {
+  const v = allVariants.find(x => x.variantNumber === num);
+  if (!v) return;
+
+  document.querySelectorAll('[id^="varBtn"]').forEach(b => {
+    b.className = 'px-2.5 py-1 text-xs rounded-lg font-medium transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200';
+  });
+  const btn = document.getElementById('varBtn' + num);
+  if (btn) btn.className = 'px-2.5 py-1 text-xs rounded-lg font-medium transition-colors bg-indigo-600 text-white';
+
+  const sorted = [...v.questions].sort((a, b) => a.position - b.position);
+  const html = sorted.map(q => `
+    <div class="border-b border-gray-100 pb-4 last:border-0">
+      <p class="font-semibold text-gray-800 text-sm mb-2">${q.position}. ${q.questionText}</p>
+      <div class="grid grid-cols-2 gap-1 text-sm">
+        <span class="text-gray-600"><strong class="text-gray-800">A)</strong> ${q.shuffledA}</span>
+        <span class="text-gray-600"><strong class="text-gray-800">B)</strong> ${q.shuffledB}</span>
+        <span class="text-gray-600"><strong class="text-gray-800">C)</strong> ${q.shuffledC}</span>
+        <span class="text-gray-600"><strong class="text-gray-800">D)</strong> ${q.shuffledD}</span>
+      </div>
+      <p class="text-xs text-green-600 mt-1.5 font-semibold">&#10003; To'g'ri javob: ${q.correctAnswer}</p>
+    </div>
+  `).join('');
+
+  document.getElementById('variantContent').innerHTML = html;
+  document.getElementById('previewTitle').textContent = `Ko'rib chiqish — ${num}-VARIANT`;
+}
+</script>
+
+<%- include('../partials/footer') %>
