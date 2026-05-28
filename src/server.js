@@ -16,11 +16,11 @@ const app = express();
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
 });
 
-// Production: ensure persistent disk directory exists
+// Production: check persistent disk is mounted
 if (process.env.NODE_ENV === 'production') {
   const dataDir = '/var/data';
   if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
+    console.warn('⚠️  /var/data not found — using local fallback. Add a Disk in Render dashboard!');
   }
 }
 
@@ -60,7 +60,9 @@ app.use(
   session({
     store: new SQLiteStore({
       db: 'sessions.db',
-      dir: process.env.NODE_ENV === 'production' ? '/var/data' : path.join(__dirname, '..', 'prisma'),
+      dir: (process.env.NODE_ENV === 'production' && fs.existsSync('/var/data'))
+        ? '/var/data'
+        : path.join(__dirname, '..', 'prisma'),
     }),
     secret: process.env.SESSION_SECRET || 'change-this-secret-in-production',
     resave: false,
