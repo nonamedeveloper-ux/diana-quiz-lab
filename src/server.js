@@ -16,6 +16,14 @@ const app = express();
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
 });
 
+// Production: ensure persistent disk directory exists
+if (process.env.NODE_ENV === 'production') {
+  const dataDir = '/var/data';
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+}
+
 // ─── Security ───────────────────────────────────────────────────────────────
 app.use(
   helmet({
@@ -110,10 +118,28 @@ app.use((err, req, res, next) => {
 });
 
 // ─── Start ───────────────────────────────────────────────────────────────────
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`\n🚀  Server: http://localhost:${PORT}`);
-  console.log(`🌍  Mode  : ${process.env.NODE_ENV || 'development'}\n`);
-});
+async function start() {
+  // Production: run DB migrations and seed after disk is mounted
+  if (process.env.NODE_ENV === 'production') {
+    const { execSync } = require('child_process');
+    try {
+      console.log('⏳  Running prisma db push...');
+      execSync('npx prisma db push --skip-generate', { stdio: 'inherit' });
+      console.log('⏳  Running seed...');
+      execSync('node prisma/seed.js', { stdio: 'inherit' });
+    } catch (e) {
+      console.error('DB setup error:', e.message);
+      // Don't exit — DB might already be set up from previous deploy
+    }
+  }
+
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`\n🚀  Server: http://localhost:${PORT}`);
+    console.log(`🌍  Mode  : ${process.env.NODE_ENV || 'development'}\n`);
+  });
+}
+
+start();
 
 module.exports = app;
