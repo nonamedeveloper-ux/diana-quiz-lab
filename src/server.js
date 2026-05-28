@@ -10,6 +10,9 @@ const fs = require('fs');
 
 const app = express();
 
+// Trust Render's proxy (required for express-rate-limit behind a load balancer)
+app.set('trust proxy', 1);
+
 // Ensure required directories exist
 ['exports', 'uploads'].forEach(dir => {
   const p = path.join(__dirname, '..', dir);
